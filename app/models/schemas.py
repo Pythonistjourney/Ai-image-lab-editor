@@ -8,3 +8,12 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: Optional[str] = None
+
+class ImageUpload(BaseModel):
+    filename: str
+    path: str
+
+class ImageResponse(BaseModel):
+    output_path: str
+    download_url: str
+    metadata: dict = {}

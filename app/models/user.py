@@ -3,7 +3,7 @@ from typing import Optional
 
 class UserBase(BaseModel):
     username: str
-    email: EmailStr
+    email: Optional[EmailStr] = None
 
 class UserCreate(UserBase):
     password: str
@@ -11,6 +11,7 @@ class UserCreate(UserBase):
 class UserInDB(UserBase):
     id: str  # MongoDB ObjectId as str
     hashed_password: str
+    edits: list = []  # Track user edits, e.g., [{"func": "colorize", "timestamp": "2025-10-26"}]
 
     class Config:
-        from_attributes = True  # For dict-to-model
+        from_attributes = True
