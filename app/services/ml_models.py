@@ -1,10 +1,6 @@
 import torch
-from deoldify import device
-from deoldify.device_id import DeviceId
-from diffusers import StableDiffusionInpaintPipeline  # For inpainting
-from transformers import pipeline  # For CLIP in presets
-
-device.set(device=DeviceId.GPU0 if torch.cuda.is_available() else DeviceId.CPU0)
+from diffusers import StableDiffusionInpaintPipeline  # For object removal inpainting
+from transformers import pipeline  # For CLIP in AI presets
 
 # Lazy loaders
 _colorizer = None
@@ -14,8 +10,13 @@ _clip = None
 def get_colorizer():
     global _colorizer
     if _colorizer is None:
-        from deoldify.visualize import get_image_colorizer
-        _colorizer = get_image_colorizer(artistic=True)
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        _colorizer = pipeline(
+            "image-to-image",
+            model="RichardZhang/colorization-v2",  # HF GAN for B&W → RGB (replaces DeOldify)
+            device=device,
+            torch_dtype=torch.float16 if device == "cuda" else torch.float32
+        )
     return _colorizer
 
 def get_inpainter():
